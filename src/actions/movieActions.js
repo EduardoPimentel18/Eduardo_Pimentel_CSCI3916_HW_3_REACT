@@ -92,3 +92,40 @@ export function submitReview(movieId, { rating, review }) {
         });
     };
 }
+
+// ── New thunk & action to power the “search” endpoint ─────────────────────────
+function searchResultsFetched(movies) {
+  return {
+    type: actionTypes.FETCH_MOVIES,
+    movies
+  }
+}
+
+/**
+ * POST /movies/search
+ * body: { query }
+ */
+export function searchMovies(query) {
+  return dispatch => {
+    const token = localStorage.getItem('token')
+    return fetch(
+      `${env.REACT_APP_API_URL}/movies/search`,
+      {
+        method: 'POST',
+        headers: {
+          'Accept':        'application/json',
+          'Content-Type':  'application/json',
+          'Authorization': token
+        },
+        mode: 'cors',
+        body: JSON.stringify({ query })
+      }
+    )
+    .then(res => {
+      if (!res.ok) throw new Error(res.statusText)
+      return res.json()
+    })
+    .then(movies => dispatch(searchResultsFetched(movies)))
+    .catch(e => console.error('Search failed:', e))
+  }
+}
