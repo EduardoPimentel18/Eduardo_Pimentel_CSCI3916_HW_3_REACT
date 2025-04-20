@@ -10,7 +10,7 @@ const MovieDetail = () => {
   const dispatch = useDispatch();
   const { movieId } = useParams(); // Get movieId from URL parameters
 
-  // ── New local state for the review form ───────────────────────────────────────
+  // New local state for the review form 
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
 
@@ -72,7 +72,7 @@ const MovieDetail = () => {
     <>
       <DetailInfo />
 
-      {/* ── Submit Review Form ──────────────────────────────────────────────────────── */}
+      {/* Submit Review Form */}
       <Form
         onSubmit={e => {
           e.preventDefault();

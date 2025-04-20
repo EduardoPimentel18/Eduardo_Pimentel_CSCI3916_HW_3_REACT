@@ -50,7 +50,7 @@ function MovieHeader() {
             </Nav.Link>
           </Nav>
 
-          {/* ── Search form ─────────────────────────────────────────────────────────── */}
+          {/* Search form */}
           {loggedIn && (
             <form onSubmit={onSearch} style={{ display: 'flex', alignItems: 'center', marginLeft: '1rem' }}>
               <input

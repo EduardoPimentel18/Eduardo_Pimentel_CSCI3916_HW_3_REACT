@@ -71,7 +71,7 @@ export function fetchMovies() {
     }
 }
 
-// ── New thunk to POST a review ─────────────────────────────────────────────────
+// New thunk to POST a review 
 export function submitReview(movieId, { rating, review }) {
     return dispatch => {
         return fetch(
@@ -93,7 +93,7 @@ export function submitReview(movieId, { rating, review }) {
     };
 }
 
-// ── New thunk & action to power the “search” endpoint ─────────────────────────
+// New thunk & action to power the “search” endpoint
 function searchResultsFetched(movies) {
   return {
     type: actionTypes.FETCH_MOVIES,
