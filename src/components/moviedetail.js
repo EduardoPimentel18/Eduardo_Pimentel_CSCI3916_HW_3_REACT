@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { fetchMovie, submitReview } from '../actions/movieActions';
 import { useDispatch, useSelector } from 'react-redux';
-import { Form, Button } from 'react-bootstrap';
-import { Card, ListGroup, ListGroupItem, Image } from 'react-bootstrap';
+import { Form, Button, Card, ListGroup, ListGroupItem, Image } from 'react-bootstrap';
 import { BsStarFill } from 'react-icons/bs';
-import { useParams } from 'react-router-dom'; // Import useParams
+import { useParams } from 'react-router-dom'; 
 
 const MovieDetail = () => {
   const dispatch = useDispatch();
-  const { movieId } = useParams(); // Get movieId from URL parameters
+  const { movieId } = useParams(); 
 
   // New local state for the review form 
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
 
   const selectedMovie = useSelector(state => state.movie.selectedMovie);
-  const loading = useSelector(state => state.movie.loading); // Assuming you have a loading state in your reducer
-  const error = useSelector(state => state.movie.error); // Assuming you have an error state in your reducer
+  const loading = useSelector(state => state.movie.loading);  // Assuming you have a loading state
+  const error = useSelector(state => state.movie.error);    // Assuming you have an error state
 
   useEffect(() => {
     dispatch(fetchMovie(movieId));
@@ -52,12 +51,17 @@ const MovieDetail = () => {
           </ListGroupItem>
           <ListGroupItem>
             <h4>
-              <BsStarFill /> {selectedMovie.avgRating}
+              <BsStarFill />{' '}
+              {/* Guard avgRating so we don’t render undefined */}
+              {typeof selectedMovie.avgRating === 'number'
+                ? selectedMovie.avgRating.toFixed(1)
+                : 'N/A'}
             </h4>
           </ListGroupItem>
         </ListGroup>
         <Card.Body>
-          {selectedMovie.reviews.map((review, i) => (
+          {/* Safely map reviews even if the array isn’t present yet */}
+          {(selectedMovie.reviews || []).map((review, i) => (
             <p key={i}>
               <b>{review.username}</b>&nbsp; {review.review} &nbsp; <BsStarFill />{' '}
               {review.rating}
@@ -80,7 +84,7 @@ const MovieDetail = () => {
             .then(() => {
               setComment('');
               setRating(5);
-              dispatch(fetchMovie(movieId)); // refresh after submit
+              dispatch(fetchMovie(movieId)); // Refresh movie data after submitting review
             });
         }}
         className="mt-4"
