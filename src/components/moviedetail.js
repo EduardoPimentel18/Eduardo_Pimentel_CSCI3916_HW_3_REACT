@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
-import { fetchMovie } from '../actions/movieActions';
+import React, { useEffect, useState } from 'react';
+import { fetchMovie, submitReview } from '../actions/movieActions';
 import { useDispatch, useSelector } from 'react-redux';
+import { Form, Button } from 'react-bootstrap';
 import { Card, ListGroup, ListGroupItem, Image } from 'react-bootstrap';
 import { BsStarFill } from 'react-icons/bs';
 import { useParams } from 'react-router-dom'; // Import useParams
@@ -8,10 +9,14 @@ import { useParams } from 'react-router-dom'; // Import useParams
 const MovieDetail = () => {
   const dispatch = useDispatch();
   const { movieId } = useParams(); // Get movieId from URL parameters
+
+  // ── New local state for the review form ───────────────────────────────────────
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState('');
+
   const selectedMovie = useSelector(state => state.movie.selectedMovie);
   const loading = useSelector(state => state.movie.loading); // Assuming you have a loading state in your reducer
   const error = useSelector(state => state.movie.error); // Assuming you have an error state in your reducer
-
 
   useEffect(() => {
     dispatch(fetchMovie(movieId));
@@ -63,8 +68,52 @@ const MovieDetail = () => {
     );
   };
 
-  return <DetailInfo />;
-};
+  return (
+    <>
+      <DetailInfo />
 
+      {/* ── Submit Review Form ──────────────────────────────────────────────────────── */}
+      <Form
+        onSubmit={e => {
+          e.preventDefault();
+          dispatch(submitReview(movieId, { rating, review: comment }))
+            .then(() => {
+              setComment('');
+              setRating(5);
+              dispatch(fetchMovie(movieId)); // refresh after submit
+            });
+        }}
+        className="mt-4"
+      >
+        <Form.Group controlId="rating">
+          <Form.Label>Rating</Form.Label>
+          <Form.Control
+            as="select"
+            value={rating}
+            onChange={e => setRating(Number(e.target.value))}
+          >
+            {[1, 2, 3, 4, 5].map(n => (
+              <option key={n}>{n}</option>
+            ))}
+          </Form.Control>
+        </Form.Group>
+
+        <Form.Group controlId="comment" className="mt-2">
+          <Form.Label>Comment</Form.Label>
+          <Form.Control
+            as="textarea"
+            rows={3}
+            value={comment}
+            onChange={e => setComment(e.target.value)}
+          />
+        </Form.Group>
+
+        <Button type="submit" className="mt-2">
+          Submit Review
+        </Button>
+      </Form>
+    </>
+  );
+};
 
 export default MovieDetail;

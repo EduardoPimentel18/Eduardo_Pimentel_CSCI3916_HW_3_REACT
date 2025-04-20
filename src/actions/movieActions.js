@@ -70,3 +70,25 @@ export function fetchMovies() {
         }).catch((e) => console.log(e));
     }
 }
+
+// ── New thunk to POST a review ─────────────────────────────────────────────────
+export function submitReview(movieId, { rating, review }) {
+    return dispatch => {
+        return fetch(
+            `${env.REACT_APP_API_URL}/reviews`, {
+                method: 'POST',
+                headers: {
+                    'Accept':        'application/json',
+                    'Content-Type':  'application/json',
+                    'Authorization': localStorage.getItem('token')
+                },
+                mode: 'cors',
+                body: JSON.stringify({ movieId, rating, review })
+            }
+        )
+        .then(res => {
+            if (!res.ok) throw new Error(res.statusText);
+            return res.json();
+        });
+    };
+}
