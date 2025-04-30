@@ -30,7 +30,7 @@ function MovieHeader() {
 
   return (
     <Navbar expand="lg" bg="dark" variant="dark">
-      <Navbar.Brand as={NavLink} to="/">Movie App</Navbar.Brand> 
+      <Navbar.Brand as={NavLink} to="/">Movie App</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
 
@@ -38,9 +38,12 @@ function MovieHeader() {
           <Nav.Link as={NavLink} to="/movielist" disabled={!loggedIn}>
             Movie List
           </Nav.Link>
-          <Nav.Link as={NavLink} to={'/movie/' + (selectedMovie? selectedMovie._id: '')} disabled={!loggedIn}>
+          <Nav.Link as={NavLink} to={'/movie/' + (selectedMovie ? selectedMovie._id : '')} disabled={!loggedIn}>
             Movie Detail
           </Nav.Link>
+          <Nav.Link as={NavLink} to="/watchlist" disabled={!loggedIn}>
+            Watchlist
+          </Nav.Link> {/* Added Watchlist link */}
           <Nav.Link as={NavLink} to="/signin">
             {loggedIn ? (
               <span onClick={logout} style={{ cursor: 'pointer' }}>

@@ -1,82 +1,96 @@
 import React, { useEffect, useState } from 'react';
 import { fetchMovie, submitReview } from '../actions/movieActions';
+import {
+  fetchWatchlist,
+  addToWatchlist,
+  removeFromWatchlist
+} from '../actions/watchlistActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Button, Card, ListGroup, ListGroupItem, Image } from 'react-bootstrap';
 import { BsStarFill } from 'react-icons/bs';
-import { useParams } from 'react-router-dom'; 
+import { useParams } from 'react-router-dom';
 
 const MovieDetail = () => {
   const dispatch = useDispatch();
-  const { movieId } = useParams(); 
+  const { movieId } = useParams();
 
-  // New local state for the review form 
-  const [rating, setRating] = useState(5);
+  // local review state
+  const [rating, setRating]   = useState(5);
   const [comment, setComment] = useState('');
 
+  // grab movie detail
   const selectedMovie = useSelector(state => state.movie.selectedMovie);
-  const loading = useSelector(state => state.movie.loading);  // Assuming you have a loading state
-  const error = useSelector(state => state.movie.error);    // Assuming you have an error state
+  const loading       = useSelector(state => state.movie.loading);
+  const error         = useSelector(state => state.movie.error);
 
+  // grab your dedicated watchlist slice
+  const watchlist    = useSelector(state => state.watchlist.items);
+  const inWatchlist  = watchlist.some(item => item._id === movieId);
+
+  // fetch both movie & watchlist on mount
   useEffect(() => {
     dispatch(fetchMovie(movieId));
+    dispatch(fetchWatchlist());
   }, [dispatch, movieId]);
 
-  const DetailInfo = () => {
-    if (loading) {
-      return <div>Loading....</div>;
-    }
-
-    if (error) {
-      return <div>Error: {error}</div>;
-    }
-
-    if (!selectedMovie) {
-      return <div>No movie data available.</div>;
-    }
-
-    return (
-      <Card className="bg-dark text-dark p-4 rounded">
-        <Card.Header>Movie Detail</Card.Header>
-        <Card.Body>
-          <Image className="image" src={selectedMovie.imageUrl} thumbnail />
-        </Card.Body>
-        <ListGroup>
-          <ListGroupItem>{selectedMovie.title}</ListGroupItem>
-          <ListGroupItem>
-            {selectedMovie.actors.map((actor, i) => (
-              <p key={i}>
-                <b>{actor.actorName}</b> {actor.characterName}
-              </p>
-            ))}
-          </ListGroupItem>
-          <ListGroupItem>
-            <h4>
-              <BsStarFill />{' '}
-              {/* Guard avgRating so we don’t render undefined */}
-              {typeof selectedMovie.avgRating === 'number'
-                ? selectedMovie.avgRating.toFixed(1)
-                : 'N/A'}
-            </h4>
-          </ListGroupItem>
-        </ListGroup>
-        <Card.Body>
-          {/* Safely map reviews even if the array isn’t present yet */}
-          {(selectedMovie.reviews || []).map((review, i) => (
-            <p key={i}>
-              <b>{review.username}</b>&nbsp; {review.review} &nbsp; <BsStarFill />{' '}
-              {review.rating}
-            </p>
-          ))}
-        </Card.Body>
-      </Card>
-    );
+  const handleWatchlistToggle = () => {
+    if (inWatchlist) dispatch(removeFromWatchlist(movieId));
+    else             dispatch(addToWatchlist(movieId));
   };
+
+  if (loading)        return <div>Loading...</div>;
+  if (error)          return <div>Error: {error}</div>;
+  if (!selectedMovie) return <div>No movie data available.</div>;
 
   return (
     <>
-      <DetailInfo />
+      <Card className="bg-dark text-light p-4 rounded mb-4">
+        <Card.Header>{selectedMovie.title}</Card.Header>
+        <Card.Body>
+          <Image
+            src={selectedMovie.imageUrl}
+            thumbnail
+            className="mb-3"
+          />
 
-      {/* Submit Review Form */}
+          <ListGroup className="mb-3" flush>
+            <ListGroupItem className="bg-dark border-dark">
+              <b>Actors:</b>  
+              {selectedMovie.actors.map((a, i) => (
+                <div key={i}>
+                  <b>{a.actorName}</b> as {a.characterName}
+                </div>
+              ))}
+            </ListGroupItem>
+
+            <ListGroupItem className="bg-dark border-dark">
+              <BsStarFill />{' '}
+              {typeof selectedMovie.avgRating === 'number'
+                ? selectedMovie.avgRating.toFixed(1)
+                : 'N/A'}
+            </ListGroupItem>
+          </ListGroup>
+
+          {/* Reviews in white text on dark background */}
+          {(selectedMovie.reviews || []).map((review, i) => (
+            <p key={i} style={{ color: '#fff', marginBottom: '0.5rem' }}>
+              <b style={{ color: '#fff' }}>{review.username}</b>{' '}
+              <span style={{ color: '#fff' }}>{review.review}</span>{' '}
+              <BsStarFill style={{ color: '#fff' }} />{' '}
+              <span style={{ color: '#fff' }}>{review.rating}</span>
+            </p>
+          ))}
+
+          <Button
+            onClick={handleWatchlistToggle}
+            variant={inWatchlist ? 'danger' : 'primary'}
+          >
+            {inWatchlist ? 'Remove from Watchlist' : 'Add to Watchlist'}
+          </Button>
+        </Card.Body>
+      </Card>
+
+      <h5>Submit a Review</h5>
       <Form
         onSubmit={e => {
           e.preventDefault();
@@ -84,12 +98,11 @@ const MovieDetail = () => {
             .then(() => {
               setComment('');
               setRating(5);
-              dispatch(fetchMovie(movieId)); // Refresh movie data after submitting review
+              dispatch(fetchMovie(movieId));
             });
         }}
-        className="mt-4"
       >
-        <Form.Group controlId="rating">
+        <Form.Group controlId="rating" className="mb-2">
           <Form.Label>Rating</Form.Label>
           <Form.Control
             as="select"
@@ -102,7 +115,7 @@ const MovieDetail = () => {
           </Form.Control>
         </Form.Group>
 
-        <Form.Group controlId="comment" className="mt-2">
+        <Form.Group controlId="comment" className="mb-2">
           <Form.Label>Comment</Form.Label>
           <Form.Control
             as="textarea"
@@ -112,9 +125,7 @@ const MovieDetail = () => {
           />
         </Form.Group>
 
-        <Button type="submit" className="mt-2">
-          Submit Review
-        </Button>
+        <Button type="submit">Submit Review</Button>
       </Form>
     </>
   );

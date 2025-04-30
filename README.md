@@ -1,3 +1,33 @@
+# Watchlist Feature Extension
+
+## I expanded the React app from Assignment 3 by adding a Watchlist feature that lets users save and manage movies separately from the main list.
+- Navigation tab for Watchlist: 
+  - Users can switch to a dedicated Watchlist view via the main navbar.
+- Add to Watchlist button on the detail page
+    - Each movie's detail view now includes a button labeled "Add to Watchlist" or "Remove from Watchlist", depending on its current state.
+- Watchlist page layout
+    - Saved movies display their poster image, title, and average review score if available. A Remove button sits beneath each entry.
+- New action creators and thunks
+    - fetchWatchlist() retrieves the user's saved movies from the API
+    - addToWatchlist(movieId) adds a specific movie to that list
+    - removeFromWatchlist(movieId) removes the movie by its identifier
+- New Redux slice
+    - A watchlistReducer holds the array of saved movies, responding to fetch, add, and remove actions.
+- Component additions
+    - WatchlistButton.js renders the heart-icon toggle for any movie
+    - WatchlistPage.js displays the grid of saved movies with title and rating
+- Modified files to wire everything up
+    - movieActions.js imports and dispatches the new watchlist thunks
+    - MovieDetail.js loads both the selected movie and the watchlist on mount
+    - MovieHeader.js adds a route link for the Watchlist tab
+    - actionTypes.js defines WATCHLIST_FETCH, WATCHLIST_ADD, and WATCHLIST_REMOVE
+    - movieReducer.js no longer holds watchlist state
+    - reducers/index.js combines watchlistReducer alongside existing reducers
+    - store.js registers the new reducer with the Redux store
+    - App.js defines the /watchlist route for the new page
+
+## With these changes, users can seamlessly track and manage their personal watchlist alongside the existing review and search features.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -68,3 +98,5 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+

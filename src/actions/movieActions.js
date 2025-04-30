@@ -1,5 +1,4 @@
 import actionTypes from '../constants/actionTypes';
-//import runtimeEnv from '@mars/heroku-js-runtime-env'
 const env = process.env;
 
 function moviesFetched(movies) {
@@ -71,7 +70,6 @@ export function fetchMovies() {
     }
 }
 
-// New thunk to POST a review 
 export function submitReview(movieId, { rating, review }) {
     return dispatch => {
         return fetch(
@@ -128,4 +126,57 @@ export function searchMovies(query) {
     .then(movies => dispatch(searchResultsFetched(movies)))
     .catch(e => console.error('Search failed:', e))
   }
+}
+
+// Watchlist actions
+function watchlistFetched(items) {
+  return { type: actionTypes.WATCHLIST_FETCH, items };
+}
+
+function watchlistAdded(item) {
+  return { type: actionTypes.WATCHLIST_ADD, item };
+}
+
+function watchlistRemoved(movieId) {
+  return { type: actionTypes.WATCHLIST_REMOVE, movieId };
+}
+
+export function fetchWatchlist() {
+  return dispatch =>
+    fetch(`${env.REACT_APP_API_URL}/watchlist`, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem('token')
+      }
+    })
+      .then(r => r.json())
+      .then(items => dispatch(watchlistFetched(items)))
+      .catch(console.error);
+}
+
+export function addToWatchlist(movieId) {
+  return dispatch =>
+    fetch(`${env.REACT_APP_API_URL}/watchlist`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem('token')
+      },
+      body: JSON.stringify({ movieId })
+    })
+      .then(r => r.json())
+      .then(item => dispatch(watchlistAdded(item)))
+      .catch(console.error);
+}
+
+export function removeFromWatchlist(movieId) {
+  return dispatch =>
+    fetch(`${env.REACT_APP_API_URL}/watchlist/${movieId}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': localStorage.getItem('token') }
+    })
+      .then(() => dispatch(watchlistRemoved(movieId)))
+      .catch(console.error);
 }
