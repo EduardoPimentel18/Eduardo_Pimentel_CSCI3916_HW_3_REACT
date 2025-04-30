@@ -28,6 +28,14 @@
 
 ## With these changes, users can seamlessly track and manage their personal watchlist alongside the existing review and search features.
 
+## Here is the link to my deployed React website on Render. It uses the enhanced Assignment 4 API (with watchlist support) to power the frontend. I also implemented the extra-credit search feature so you can look up movies or actor names from the five films in my database:
+ - https://eduardo-pimentel-csci3916-hw-3-react.onrender.com
+
+## And here is the source code for the Assignment 4 API on GitHub, which includes the watchlist functionality:
+
+- https://github.com/EduardoPimentel18/Eduardo_Pimentel_CSCI3916_HW_4
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
