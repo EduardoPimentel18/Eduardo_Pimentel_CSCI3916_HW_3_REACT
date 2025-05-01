@@ -33,6 +33,9 @@ const MovieDetail = () => {
     dispatch(fetchWatchlist());
   }, [dispatch, movieId]);
 
+  // helper to round down to one decimal place
+  const showRating = avg => (Math.floor(avg * 10) / 10).toFixed(1);
+
   const handleWatchlistToggle = () => {
     if (inWatchlist) dispatch(removeFromWatchlist(movieId));
     else             dispatch(addToWatchlist(movieId));
@@ -66,7 +69,7 @@ const MovieDetail = () => {
             <ListGroupItem className="bg-dark border-dark">
               <BsStarFill />{' '}
               {typeof selectedMovie.avgRating === 'number'
-                ? selectedMovie.avgRating.toFixed(1)
+                ? showRating(selectedMovie.avgRating)
                 : 'N/A'}
             </ListGroupItem>
           </ListGroup>
@@ -101,6 +104,7 @@ const MovieDetail = () => {
               dispatch(fetchMovie(movieId));
             });
         }}
+        className="mt-4"
       >
         <Form.Group controlId="rating" className="mb-2">
           <Form.Label>Rating</Form.Label>

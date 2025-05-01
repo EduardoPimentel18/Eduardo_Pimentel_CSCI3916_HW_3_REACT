@@ -45,12 +45,16 @@ function MovieList() {
               </Nav.Link>
               <Carousel.Caption>
                 <h3>{movie.title}</h3>
-                <BsStarFill /> {movie.avgRating} &nbsp;&nbsp; {movie.releaseDate}
+                <BsStarFill />{' '}
+                {typeof movie.avgRating === 'number'
+                  ? movie.avgRating.toFixed(1)
+                  : 'N/A'}{' '}
+                &nbsp;&nbsp; {movie.releaseDate}
               </Carousel.Caption>
             </Carousel.Item>
           ))}
         </Carousel>
-      );
-    }
+    );
+}
 
 export default MovieList;

@@ -13,6 +13,9 @@ export default function WatchlistPage() {
     dispatch(fetchWatchlist());
   }, [dispatch]);
 
+  // helper to round down to one decimal place
+  const showRating = avg => (Math.floor(avg * 10) / 10).toFixed(1);
+
   if (!items.length) return <p className="text-light">Your watchlist is empty.</p>;
 
   return (
@@ -33,7 +36,7 @@ export default function WatchlistPage() {
               <ListGroup className="mb-3">
                 <ListGroupItem className="bg-dark border-dark text-center">
                   <BsStarFill className="me-2" />
-                  {w.avgRating != null ? w.avgRating.toFixed(1) : 'N/A'}
+                  {w.avgRating != null ? showRating(w.avgRating) : 'N/A'}
                 </ListGroupItem>
               </ListGroup>
 
