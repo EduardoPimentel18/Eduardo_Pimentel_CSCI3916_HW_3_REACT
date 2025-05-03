@@ -11,10 +11,10 @@ export default function watchlistReducer(state = initialState, action) {
       return { ...state, items: [...state.items, action.item] };
 
     case constants.WATCHLIST_REMOVE:
-      // Ensure that you're consistently using the correct identifier (_id or movieId)
+      // This uses _id or movieId
       return {
         ...state,
-        items: state.items.filter(i => i._id !== action.movieId)  // Ensure you're using _id consistently
+        items: state.items.filter(i => i._id !== action.movieId)  // This uses _id consistently
       };
 
     default:

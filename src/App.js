@@ -16,7 +16,7 @@ function App() {
           <Route path="/movielist" element={<MovieList />}/>
           <Route path="/movie/:movieId" element={<Movie />}/>
           <Route path="/signin" element={<Authentication />}/>
-          <Route path="/watchlist" element={<WatchlistPage />}/> {/* Add Watchlist Route */}
+          <Route path="/watchlist" element={<WatchlistPage />}/> {/* Watchlist Route */}
         </Routes>
       </HashRouter>
     </div>
